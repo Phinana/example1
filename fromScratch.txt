@@ -1,0 +1,162 @@
+8 -> Routing ==
+
+php artisan route:list
+
+//tanım
+Route::get('/post/{id}', function($id){
+return $id;
+})->where([
+'id' => '[0-9]+'
+]);
+
+//varsayılan değer verilir soru işareti
+Route::get('/post/{id}/{days_ago?}', function($id, $days_ago = 20){
+return $id;
+});
+
+//RouteServiceProvider boot içerisine, id olan her şeye etki eder.
+Route::pattern('id', '[0-9]+');
+
+9 -> Templating ==
+
+//extend edilecek olana
+@yield('title')
+
+//extend eden dosyaya
+@extends('dosya_ismi')
+@section('title')
+içerik
+@endsection
+
+//sadece view dön
+Route::get('/', 'home');
+
+//bir veri koy fonksiyona
+Route::get('/post/{id}', function($id) use ($data){
+return $id;
+});
+
+@foreach($posts as $key => $post)
+@endforeach
+
+//partials bölümünü geçtim
+
+10 -> Request and responses ==
+
+//response kısmından sonra view eklenebiir
+Route::get('/post/response', function() use ($data){
+return response($data, 201)->header('Content-Type', 'application/json')->cookie('MY_COOKIE', 'Piotr Jura', 3600);
+});
+
+return redirect('sayfa_adi');
+return redirect()->route('route_adi', ['data' => $data]);
+retunr redirect()->away('www.google.com');
+return back();
+return response()->json($posts);
+return response()->download(public_path('/daniel.jpg'), 'face.jpg');
+
+//route grouping video 40
+
+$request->has('isim');
+//requestin metodlari var
+
+//middleware eklemek için
+kernele ekle oluşturup oradan çağır
+
+11 -> Controllers ==
+
+php artisan make:controller PostController --resource
+Route::resource('posts', PostController::class)->only(['index', 'show']); //except(['index', 'show'])
+
+12 -> config == //not yok
+
+13 -> databases == //not yok
+
+14 -> eloquent ==
+save() gibi model metodları
+find([1, 2, 3])
+querybuilder model->where()->orderBy()->get();
+take(5) = limit 5
+
+15 -> form markup ==
+
+//eğer validation sırasında sorun çıkarsa, fomr ile denendiyse eski sayfaya error değişkeni içerisinde sonucu döner
+//eğer ajax ile yapıldı ise sonuç json olarak döner
+$request->validate([
+'title' => 'bail|required',
+'pass' => 'bail|required'
+]);
+
+//kısaca errorlari gösterme
+if $errors->any()
+foreach $errors->all() as $error
+$error
+
+custom request ile validation için
+
+make:request PostRequest
+return içerisine aynen yaz validationları (rules içerisine)
+sonra controllerda 
+$validated = $request->validated(); //request classi PostRequest olmali
+
+blogpost::create($validated)
+
+flash messages için video 65
+
+old('content') ile önceki sayfanın verisini alabilir, inputun value kısmına ver
+
+16 -> crud ==
+
+fromda update ederken method(put)
+
+17 -> assets ==
+
+composer require laravel/ui 3.0.0
+php artisan ui bootstrap
+
+bütün frontend paketleri package.json içerisinde tanımlı bunları kurmak için
+npm install
+npm run dev yada npm run watch (watch sürekli izler)
+
+link rel="stylesheet" href="{{ asset('css/app.css') }}"
+script src="{{ asset('js/app.js') }}" defer /script
+
+video 76 mix feature optional
+
+18 -> testing ==
+//skipped
+
+19 -> one to one relation ==
+$profile->author()->associate($author)->save();
+
+20 -> one to many relation ==
+belongsTo (model::class, 'küçük tablo id', 'büyük tablo id')
+saveMany() metodu var
+
+21 -> querying basics ==
+DB::connection()->enableQueryLog();
+whereHas = video 98 dakika 7
+whereDoesntHave = video 99
+
+22 -> model factories ==
+
+'title' => 'title' => $this->faker->sentence,
+Post::factory()->count(2)->create();
+
+$post->created_at-<diffForHumans();
+
+23 -> authentication ==
+//skipped
+
+24 -> seeders ==
+//no notes
+
+25 -> deleting models==
+
+return $this->morphTo('relation','relationable_type','relationable_id');
+
+latest -> notes ==
+morphMany('App\Comment', 'commentable')
+morphTo
+
+$table->foreignId('user_id')->references('id')->on('users')->after('id');
